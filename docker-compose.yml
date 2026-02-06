@@ -1,0 +1,61 @@
+# Copyright (c) 2026 Intern Village. All rights reserved.
+# SPDX-License-Identifier: Proprietary
+
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: intern-village-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-intern}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-internpass}
+      POSTGRES_DB: ${POSTGRES_DB:-intern_village}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-intern} -d ${POSTGRES_DB:-intern_village}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: intern-village-orchestrator
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-intern}:${POSTGRES_PASSWORD:-internpass}@postgres:5432/${POSTGRES_DB:-intern_village}?sslmode=disable
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      DATA_DIR: /data
+      PROMPTS_DIR: /app/prompts
+      PORT: 8080
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      AGENT_MAX_RETRIES: ${AGENT_MAX_RETRIES:-10}
+      SYNC_INTERVAL_SECONDS: ${SYNC_INTERVAL_SECONDS:-30}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    volumes:
+      - orchestrator_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  orchestrator_data:

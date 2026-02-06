@@ -1,0 +1,92 @@
+# ===================
+# Environment & Secrets
+# ===================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ===================
+# Project Data (runtime)
+# ===================
+data/
+samples/
+
+# ===================
+# OS Generated
+# ===================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# ===================
+# IDE / Editors
+# ===================
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+*~
+*.sublime-workspace
+*.sublime-project
+
+# ===================
+# Go (Orchestrator)
+# ===================
+orchestrator/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+coverage.out
+coverage.html
+
+# ===================
+# Node.js (Frontend)
+# ===================
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+.yarn-integrity
+
+# ===================
+# Logs
+# ===================
+*.log
+logs/
+
+# ===================
+# Testing
+# ===================
+coverage/
+.nyc_output/
+*.lcov
+
+# ===================
+# Build artifacts
+# ===================
+*.tmp
+tmp/
+temp/
+
+# ===================
+# Claude / AI Tools
+# ===================
+.claude/settings.local.json
